@@ -16,6 +16,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
+import de.tvo.parser.DTLParser;
+import de.tvo.team.Competition;
+import de.tvo.team.TeamSheet;
+
 /**
  * Copyright (C) 2013 Immanuel Schweizer
  *
@@ -44,7 +48,7 @@ public class ScoreOptimizer {
 			"Reck" };
 
 	public ScoreOptimizer(double[][] a, double[][] b, double[][] a_a,
-			double[][] b_a, String h_name, String a_name, int h, int aw, boolean details, boolean isAway) {
+			double[][] b_a, String[][] names_a, String[][] names_b, String h_name, String a_name, int h, int aw, boolean details, boolean isAway) {
 		System.out.println("==================================");
 		if(!isAway) {
 			System.out.println("Wettkampf: " + h_name + " gegen " + a_name);
@@ -66,8 +70,8 @@ public class ScoreOptimizer {
 				System.out.println("Optimum");
 				System.out.println("Paarungen:");
 				for (int j = 0; j < 4; j++) {
-					System.out.println("(" + a[i][j] + ") " + j + " - "
-							+ combines[j] + " (" + b[i][combines[j]] + ") ["
+					System.out.println("(" + a[i][j] + ") " + names_a[i][j] + " - "
+							+ names_b[i][combines[j]] + " (" + b[i][combines[j]] + ") ["
 							+ points[j] + "]");
 				}
 				System.out.println("Ergebnis: " + home + ":" + away);
@@ -117,12 +121,33 @@ public class ScoreOptimizer {
 		System.out.println("==================================");
 	}
 
+	public ScoreOptimizer(Competition c, boolean details, boolean isAway) {
+		TeamSheet home = c.getHome();
+		TeamSheet away = c.getAway();
+		new ScoreOptimizer(home.getResultArray(), away.getResultArray(), home.getDfficultiesArray10(), away.getDfficultiesArray10(), home.getNames(), away.getNames(), home.getName(), away.getName(), home.getScore(), away.getScore(), details, isAway);
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		DTLParser parser = DTLParser.dtlParser;
+//		Competition co = parser.readResultsPage("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010");
+		// OR KTV
+//		new ScoreOptimizer(co, true, false);
 		
-		double[][] a = { { 11.75, 11.75, 11.65, 12.65 },
+		Competition co = new Competition(parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010"), parser.readAwayTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1008"));
+		// OR Wangen
+		new ScoreOptimizer(co, true, false);
+		 
+//		co = new Competition(parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010"), parser.readAwayTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1011"));
+		// OR Kirchheim
+//		new ScoreOptimizer(co, true, false);
+		
+//		Competition co = new Competition(parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010"), parser.readAwayTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1009"));
+		// OR Kirchheim
+//		new ScoreOptimizer(co, true, false);
+/*		double[][] a = { { 11.75, 11.75, 11.65, 12.65 },
 				{ 9.8, 9.35, 11.25, 10.8 }, { 10.3, 11.3, 13.1, 10.65 },
 				{ 12.75, 11.6, 10.75, 11.80 }, { 11.65, 11.75, 12.10, 10.6 },
 				{ 11.25, 11.05, 11.6, 11.0 } };
@@ -138,9 +163,9 @@ public class ScoreOptimizer {
 				{ 13.4, 13.0, 13.0, 12.8 }, { 13.6, 13.5, 13.0, 11.9 },
 				{ 13.6, 13.6, 13.6, 13.6 }, { 13.4, 13.1, 13.8, 13.3 },
 				{ 12.4, 12.1, 13.3, 12.4 } };
-		new ScoreOptimizer(a, b, a_a, b_a, "TV 1877 Ober Ramstadt", "KTV Hohenlohe", 28, 43, true, false);
+		new ScoreOptimizer(a, b, a_a, b_a, "TV 1877 Ober Ramstadt", "KTV Hohenlohe", 28, 43, true, false);*/
 
-		double[][] c = { { 11.75, 11.75, 11.65, 12.65 },
+/*		double[][] c = { { 11.75, 11.75, 11.65, 12.65 },
 				{ 9.8, 9.35, 11.25, 10.8 }, { 10.3, 11.3, 13.1, 10.65 },
 				{ 12.75, 11.6, 10.75, 11.80 }, { 11.65, 11.75, 12.10, 10.6 },
 				{ 11.25, 11.05, 11.6, 11.0 } };
@@ -156,13 +181,8 @@ public class ScoreOptimizer {
 				{ 13.1, 13.3, 12.8, 12.1 }, { 13.7, 12.5, 14.4, 14.0 },
 				{ 13.6, 13.0, 13.6, 13.6 }, { 13.0, 13.0, 13.3, 13.7 },
 				{ 12.5, 12.5, 13.0, 13.2 } };
-		ScoreOptimizer sO = new ScoreOptimizer(c, d, c_a, d_a, "TV 1877 Ober Ramstadt", "TG Wangen / Eisenharz", 0, 0, true, true);
-		try {
-			sO.getResultsForURL();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ScoreOptimizer sO = new ScoreOptimizer(c, d, c_a, d_a, "TV 1877 Ober Ramstadt", "TG Wangen / Eisenharz", 0, 0, true, true);*/
+		
 		
 /*		double[][] c = { { 14.60, 14.00, 14.55, 12.85 },
 				{ 13.7, 13.1, 15.15, 10.90 }, { 14.4, 11.75, 12.5, 14.5 },
