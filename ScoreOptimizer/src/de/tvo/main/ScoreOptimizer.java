@@ -144,8 +144,12 @@ public class ScoreOptimizer {
 		// OR Kirchheim
 //		new ScoreOptimizer(co, true, false);
 		
-//		Competition co = new Competition(parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010"), parser.readAwayTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1009"));
-		// OR Kirchheim
+//		Competition co = new Competition(parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010"), parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1009"));
+		// OR Kieselbronn
+//		new ScoreOptimizer(co, true, false);
+		
+//		Competition co = new Competition(parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/regionalliga_s/detail.php?ID=1010"), parser.readHomeTeam("http://www.deutsche-turnliga.de/maenner/bundesliga_1/detail.php?ID=905"));
+		// OR Obere Lahn
 //		new ScoreOptimizer(co, true, false);
 /*		double[][] a = { { 11.75, 11.75, 11.65, 12.65 },
 				{ 9.8, 9.35, 11.25, 10.8 }, { 10.3, 11.3, 13.1, 10.65 },
